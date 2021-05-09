@@ -1,0 +1,98 @@
+﻿<Application x:Class="ImageProcessor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ImageProcessor"
+             StartupUri="MainWindow.xaml" Startup="AppStartup">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="#A0000000" />
+                <Setter Property="Background" Value="DeepSkyBlue" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border Background="{TemplateBinding Background}" />
+                                <Border x:Name="opacLayer" Background="{TemplateBinding BorderBrush}" Opacity="0" />
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation To="1" Duration="0:0:0.1"
+                                                             Storyboard.TargetName="opacLayer"
+                                                             Storyboard.TargetProperty="Opacity" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation To="0" Duration="0:0:0.1"
+                                                             Storyboard.TargetName="opacLayer"
+                                                             Storyboard.TargetProperty="Opacity" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="StylizedWindow" TargetType="Window">
+                <Setter Property="AllowsTransparency" Value="True" />
+                <Setter Property="WindowStyle" Value="None" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Window">
+                            <Border Padding="5">
+                                <Grid>
+                                    <Border Background="DeepSkyBlue" MouseMove="StylizedWindowTitleBarMouseMove">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="5" ShadowDepth="0" />
+                                        </Border.Effect>
+                                    </Border>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="32" />
+                                            <RowDefinition Height="1*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="45" />
+                                                <ColumnDefinition Width="45" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{TemplateBinding Title}"
+                                                       Foreground="White" VerticalAlignment="Center"
+                                                       Margin="12,0,0,0"
+                                                       MouseMove="StylizedWindowTitleBarMouseMove"/>
+                                            <Button Grid.Column="1" Background="Transparent" Click="StylizedWindowMinimizeClick">
+                                                <Grid>
+                                                    <Polyline Points="0,0 10,0" Stroke="White" StrokeThickness="1" StrokeStartLineCap="Round" />
+                                                </Grid>
+                                            </Button>
+                                            <Button Grid.Column="2" Background="Transparent" BorderBrush="#B0FF0000" Click="StylizedWindowCloseClick">
+                                                <Grid>
+                                                    <Polyline Points="0,0 10,10" Stroke="White" StrokeThickness="1" StrokeStartLineCap="Round" />
+                                                    <Polyline Points="10,0 0,10" Stroke="White" StrokeThickness="1" StrokeStartLineCap="Round" />
+                                                </Grid>
+                                            </Button>
+                                        </Grid>
+                                        <Border Grid.Row="1" Background="White">
+                                            <AdornerDecorator>
+                                                <ContentPresenter />
+                                            </AdornerDecorator>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

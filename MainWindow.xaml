@@ -1,0 +1,82 @@
+﻿<Window x:Class="ImageProcessor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageProcessor"
+        mc:Ignorable="d"
+        Style="{StaticResource StylizedWindow}"
+        Title="图片处理器" Height="700" Width="1200" Icon="icon.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="168" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="图片处理操作：" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+            <ListBox x:Name="processorList" Grid.Row="1" Margin="5" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Margin="5" Content="添加" Click="AddProcessor"/>
+                <Button Margin="5" Content="删除" Click="RemoveProcessor"/>
+                <Button Margin="5" Content="编辑" Click="EditProcessor"/>
+                <Button Margin="5" Content="清空" Click="ClearProcessor"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="processorEditGrid" Grid.Column="1" Visibility="Visible" IsHitTestVisible="True" Opacity="1">
+            <StackPanel x:Name="processorStack" />
+        </Grid>
+        <Grid x:Name="typeListGrid" Grid.Column="1" Visibility="Collapsed" IsHitTestVisible="False" Opacity="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" x:Name="typeList" Margin="5" />
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Content="确认" Click="ConfirmAddProcessor" Margin="5" />
+                <Button Content="取消" Click="CancelAddProcessor" Margin="5" />
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="previewGrid" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="图片预览：" VerticalAlignment="Center" Margin="5,0,0,0" />
+            </StackPanel>
+            <Image x:Name="imagePreview" Grid.Row="1" Margin="5" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Content="打开图片" Margin="5" Click="OpenImage" />
+                <Button x:Name="saveImageButton" Content="保存图片" Margin="5" Click="SaveImage" />
+                <TextBlock x:Name="loadingTips" VerticalAlignment="Center" Opacity="0" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+    <Window.Resources>
+        <Storyboard x:Key="showTypeList">
+            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="typeListGrid" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+        <Storyboard x:Key="hideTypeList" Completed="HideTypeListCompleted">
+            <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="typeListGrid" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+        <Storyboard x:Key="showProcessorEdit">
+            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="processorEditGrid" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+        <Storyboard x:Key="hideProcessorEdit" Completed="HideProcessorEditCompleted">
+            <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="processorEditGrid" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+        <Storyboard x:Key="showLoadingTips">
+            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="loadingTips" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+        <Storyboard x:Key="hideLoadingTips">
+            <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="loadingTips" Storyboard.TargetProperty="Opacity" />
+        </Storyboard>
+    </Window.Resources>
+</Window>
