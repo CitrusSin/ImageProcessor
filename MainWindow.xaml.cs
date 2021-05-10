@@ -427,13 +427,13 @@ namespace ImageProcessor
                 System.Drawing.Size size1 = new System.Drawing.Size
                 {
                     Width = (int)Math.Min(previewGrid.ActualWidth, originalImage.Width),
-                    Height = (int)(Width / wph)
                 };
+                size1.Height = (int)(size1.Width / wph);
                 System.Drawing.Size size2 = new System.Drawing.Size
                 {
                     Height = (int)Math.Min(previewGrid.RowDefinitions[1].ActualHeight, originalImage.Width),
-                    Width = (int)(Height * wph)
                 };
+                size2.Width = (int)(size2.Height * wph);
                 previewImage = new System.Drawing.Bitmap(originalImage, (size1.Width > size2.Width) ? size1 : size2);
                 UpdateProcessedImage();
             }
