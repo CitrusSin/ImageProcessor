@@ -21,6 +21,7 @@ namespace ImageProcessor
 
         public static void Startup()
         {
+            ProxifierFactory.RegisterProxifiers();
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (Type type in types)
             {
@@ -44,7 +45,7 @@ namespace ImageProcessor
             }
         }
 
-        public static Image MakeProcessedImage(Image source, IEnumerable<Processors.ImageProcessor> processors)
+        public static Image MakeProcessedImage(Image source, IEnumerable<Processors.Processor> processors)
         {
             var im = source;
             foreach (var p in processors)

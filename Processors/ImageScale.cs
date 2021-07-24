@@ -7,7 +7,7 @@ using System.Text;
 namespace ImageProcessor.Processors
 {
     [ImageProcessor("缩放图片")]
-    public class ImageScale : ImageProcessor
+    public class ImageScale : Processor
     {
         [Option("缩放倍数", Minimum = 0d)]
         public double Scale = 1d;

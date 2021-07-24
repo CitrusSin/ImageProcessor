@@ -24,7 +24,7 @@ namespace ImageProcessor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly List<Processors.ImageProcessor> processors = new List<Processors.ImageProcessor>();
+        private readonly List<Processors.Processor> processors = new List<Processors.Processor>();
         private System.Drawing.Image originalImage;
         private System.Drawing.Bitmap previewImage;
         private System.Drawing.Bitmap processedPreviewImage;
@@ -132,7 +132,7 @@ namespace ImageProcessor
             if (index < 0)
                 return;
             var p = IPCore.ProcessorTypes[index];
-            var processor = (Processors.ImageProcessor)p.GetConstructor(new Type[0]).Invoke(new object[0]);
+            var processor = (Processor)p.GetConstructor(new Type[0]).Invoke(new object[0]);
             processors.Add(processor);
             TypeListOpen = false;
             processorList.ItemsSource = processors.ToArray();
@@ -155,112 +155,13 @@ namespace ImageProcessor
             UpdateProcessedImage();
         }
 
-        private void AddNumAdjust(StackPanel sp, OptionAttribute attribute, FieldInfo opt, Processors.ImageProcessor p, int digitNum)
-        {
-            Type optType = opt.FieldType;
-            if (attribute.Maximum.GetType() == optType && attribute.Minimum.GetType() == optType)
-            {
-                Slider slider = new Slider
-                {
-                    TickFrequency = 1d,
-                    MinWidth = 200
-                };
-                if (optType == typeof(int))
-                {
-                    slider.Minimum = (int)attribute.Minimum;
-                    slider.Maximum = (int)attribute.Maximum;
-                    slider.Value = (int)opt.GetValue(p);
-                }
-                else if (optType == typeof(float))
-                {
-                    slider.Minimum = (float)attribute.Minimum;
-                    slider.Maximum = (float)attribute.Maximum;
-                    slider.Value = (float)opt.GetValue(p);
-                }
-                else if (optType == typeof(double))
-                {
-                    slider.Minimum = (double)attribute.Minimum;
-                    slider.Maximum = (double)attribute.Maximum;
-                    slider.Value = (double)opt.GetValue(p);
-                }
-                slider.ValueChanged += (s, args) =>
-                {
-                    if (optType == typeof(int))
-                    {
-                        opt.SetValue(p, (int)slider.Value);
-                    }
-                    else if (optType == typeof(float))
-                    {
-                        opt.SetValue(p, (float)slider.Value);
-                    }
-                    else if (optType == typeof(double))
-                    {
-                        opt.SetValue(p, (double)slider.Value);
-                    }
-                    UpdateProcessedImage();
-                };
-                TextBlock digit = new TextBlock();
-                var digitBinding = new Binding("Value")
-                {
-                    Source = slider,
-                    StringFormat = "{0:F" + digitNum.ToString() + "}"
-                };
-                digit.SetBinding(TextBlock.TextProperty, digitBinding);
-                sp.Children.Add(slider);
-                sp.Children.Add(digit);
-            }
-            else
-            {
-                TextBox box = new TextBox
-                {
-                    Text = opt.GetValue(p).ToString(),
-                    MinWidth = 100
-                };
-                bool controlLock = false;
-                box.TextChanged += (s, args) =>
-                {
-                    if (!controlLock)
-                    {
-                        if (double.TryParse(box.Text, out double val))
-                        {
-                            if (optType == typeof(int))
-                            {
-                                opt.SetValue(p, (int)val);
-                            }
-                            else if (optType == typeof(float))
-                            {
-                                opt.SetValue(p, (float)val);
-                            }
-                            else if (optType == typeof(double))
-                            {
-                                opt.SetValue(p, (double)val);
-                            }
-                            UpdateProcessedImage();
-                        }
-                        else if (box.Text == "")
-                        {
-                            opt.SetValue(p, 0);
-                            UpdateProcessedImage();
-                        }
-                        else
-                        {
-                            controlLock = true;
-                            box.Text = opt.GetValue(p).ToString();
-                            controlLock = false;
-                        }
-                    }
-                };
-                sp.Children.Add(box);
-            }
-        }
-
         private void EditProcessor(object sender, RoutedEventArgs e)
         {
             processorStack.Children.Clear();
             var index = processorList.SelectedIndex;
             if (index < 0)
                 return;
-            Processors.ImageProcessor p = processors[index];
+            Processor p = processors[index];
             var options = p.GetType().GetFields().Where((f) => f.GetCustomAttribute<OptionAttribute>() != null);
             foreach (FieldInfo opt in options)
             {
@@ -277,103 +178,8 @@ namespace ImageProcessor
                     Text = name + "："
                 };
                 sp.Children.Add(tb);
-                if (type == typeof(int))
-                {
-                    AddNumAdjust(sp, attribute, opt, p, 0);
-                }
-                else if (type == typeof(float))
-                {
-                    AddNumAdjust(sp, attribute, opt, p, 2);
-                }
-                else if (type == typeof(double))
-                {
-                    AddNumAdjust(sp, attribute, opt, p, 3);
-                }
-                else if (type == typeof(string))
-                {
-                    TextBox box = new TextBox
-                    {
-                        Text = opt.GetValue(p).ToString(),
-                        MinWidth = 100
-                    };
-                    box.TextChanged += (s, args) =>
-                    {
-                        opt.SetValue(p, box.Text);
-                        UpdateProcessedImage();
-                    };
-                    sp.Children.Add(box);
-                }
-                else if (type == typeof(System.Drawing.Point))
-                {
-                    TextBox bX = new TextBox
-                    {
-                        Text = ((System.Drawing.Point)opt.GetValue(p)).X.ToString(),
-                        MinWidth = 100
-                    };
-                    TextBox bY = new TextBox
-                    {
-                        Text = ((System.Drawing.Point)opt.GetValue(p)).Y.ToString(),
-                        MinWidth = 100
-                    };
-                    bool controlLockX = false, controlLockY = false;
-                    bX.TextChanged += (s, args) =>
-                    {
-                        if (!controlLockX)
-                        {
-                            var point = (System.Drawing.Point)opt.GetValue(p);
-                            if (int.TryParse(bX.Text, out int val))
-                            {
-                                point.X = val;
-                                opt.SetValue(p, point);
-                                UpdateProcessedImage();
-                            }
-                            else if (bX.Text == "")
-                            {
-                                point.X = 0;
-                                opt.SetValue(p, point);
-                                UpdateProcessedImage();
-                            }
-                            else
-                            {
-                                controlLockX = true;
-                                bX.Text = point.X.ToString();
-                                controlLockX = false;
-                            }
-                        }
-                    };
-                    bY.TextChanged += (s, args) =>
-                    {
-                        if (!controlLockY)
-                        {
-                            var point = (System.Drawing.Point)opt.GetValue(p);
-                            if (int.TryParse(bY.Text, out int val))
-                            {
-                                point.Y = val;
-                                opt.SetValue(p, point);
-                                UpdateProcessedImage();
-                            }
-                            else if (bY.Text == "")
-                            {
-                                point.Y = 0;
-                                opt.SetValue(p, point);
-                                UpdateProcessedImage();
-                            }
-                            else
-                            {
-                                controlLockY = true;
-                                bY.Text = point.Y.ToString();
-                                controlLockY = false;
-                            }
-                        }
-                    };
-                    TextBlock comma = new TextBlock
-                    {
-                        Text = ", "
-                    };
-                    sp.Children.Add(bX);
-                    sp.Children.Add(comma);
-                    sp.Children.Add(bY);
-                }
+                Proxifier proxy = ProxifierManager.GetProxifier(type);
+                sp.Children.Add(proxy.GetPanel(this, attribute, opt, p, UpdateProcessedImage));
                 processorStack.Children.Add(sp);
             }
             ProcessorEditOpen = true;
@@ -384,6 +190,7 @@ namespace ImageProcessor
             ProcessorEditOpen = false;
             processors.Clear();
             processorList.ItemsSource = processors.ToArray();
+            UpdateProcessedImage();
         }
 
         private bool updateLock = false;

@@ -11,6 +11,7 @@ namespace ImageProcessor.Processors
         public string Name { get; private set; }
         public object Maximum { get; set; }
         public object Minimum { get; set; }
+        public bool SlowUpdate { get; set; } = false;
 
         public OptionAttribute(string name)
         {

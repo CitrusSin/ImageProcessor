@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ImageProcessor.Processors
 {
-    public abstract class ImageProcessor
+    public abstract class Processor
     {
         public abstract Image ProcessImage(Image source);
 

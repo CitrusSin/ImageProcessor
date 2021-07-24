@@ -58,9 +58,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageProxifier.cs" />
     <Compile Include="IPCore.cs" />
+    <Compile Include="NumProxifier.cs" />
+    <Compile Include="Processors\PutLayer.cs" />
+    <Compile Include="Proxifier.cs" />
+    <Compile Include="PointProxifier.cs" />
     <Compile Include="Processors\BrightnessContrast.cs" />
-    <Compile Include="Processors\ImageProcessor.cs" />
+    <Compile Include="Processors\Processor.cs" />
     <Compile Include="Processors\ImageProcessorAttribute.cs" />
     <Compile Include="Processors\ImageProcessorPerPixel.cs" />
     <Compile Include="Processors\ImageScale.cs" />
@@ -69,6 +74,8 @@
     <Compile Include="Processors\RemoveBackground.cs" />
     <Compile Include="Processors\Reverse.cs" />
     <Compile Include="Processors\SaturationAdjust.cs" />
+    <Compile Include="ProxifierManager.cs" />
+    <Compile Include="ProxifierFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -9,7 +9,7 @@ using System.Text;
 namespace ImageProcessor.Processors
 {
     [ImageProcessor("将图像转化为带颜色文本图案")]
-    public class ImageToColoredText : ImageProcessor
+    public class ImageToColoredText : Processor
     {
         [Option("替代文本")]
         public string transferText = "TEST";

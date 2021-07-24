@@ -8,8 +8,11 @@ using System.Text;
 
 namespace ImageProcessor.Processors
 {
-    public abstract class ImageProcessorPerPixel : ImageProcessor
+    public abstract class ImageProcessorPerPixel : Processor
     {
+        protected int X = 0;
+        protected int Y = 0;
+
         protected abstract void ProcessPixel(ref byte a, ref byte r, ref byte g, ref byte b);
 
         protected virtual void StartProcess(Bitmap image) { }
@@ -26,8 +29,10 @@ namespace ImageProcessor.Processors
             int offset = 0;
             for (int y = 0; y < data.Height; y++)
             {
+                Y = y;
                 for (int x = 0; x < data.Width; x++)
                 {
+                    X = x;
                     ProcessPixel(
                         ref rawData[offset + 3],
                         ref rawData[offset + 2],
